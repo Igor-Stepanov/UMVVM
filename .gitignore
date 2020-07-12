@@ -58,3 +58,12 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# CsProjBin
+src/Models/bin
+src/Models/obj
+src/ViewModels/bin
+src/ViewModels/obj
+src/Views/bin
+src/Views/obj
+
+src/.idea
