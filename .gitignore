@@ -67,3 +67,6 @@ src/Views/bin
 src/Views/obj
 
 src/.idea
+src/packages
+src/Tests/bin
+src/Tests/obj

@@ -8,15 +8,15 @@ namespace ViewModels.Members
 {
   public sealed class ViewModelMembers
   {
-    private readonly IViewModel _viewModel;
+    private readonly IViewModel _instance;
     private readonly ViewModelType _type;
 
     private readonly Dictionary<string, IViewModelMember> _members;
     private readonly List<IViewModel> _viewModels;
 
-    public ViewModelMembers(IViewModel viewModel, ViewModelType type)
+    public ViewModelMembers(IViewModel instance, ViewModelType type)
     {
-      _viewModel = viewModel;
+      _instance = instance;
       _type = type;
 
       _members = new Dictionary<string, IViewModelMember>(_type.MembersCount);
@@ -66,7 +66,7 @@ namespace ViewModels.Members
       _members.Clear();
 
     private IViewModelMember Member(FieldInfo field) =>
-      (IViewModelMember) field.GetValue(_viewModel);
+      (IViewModelMember) field.GetValue(_instance);
 
     private IViewModelMember Member(MethodInfo method)
     {
@@ -76,7 +76,7 @@ namespace ViewModels.Members
       {
         case 0:
         {
-          var action = (Action) Delegate.CreateDelegate(typeof(Action), _viewModel, method);
+          var action = (Action) Delegate.CreateDelegate(typeof(Action), _instance, method);
           return new Command(action);
         }
         case 1:
@@ -86,27 +86,16 @@ namespace ViewModels.Members
           var actionType = typeof(Action<>).MakeGenericType(parameterType);
           var commandType = typeof(Command<>).MakeGenericType(parameterType);
 
-          var action = Delegate.CreateDelegate(actionType, _viewModel, method);
+          var action = Delegate.CreateDelegate(actionType, _instance, method);
           return (IViewModelMember) Activator.CreateInstance(commandType, action);
         }
         default:
-          throw new NotSupportedException($"Method {_viewModel.GetType()}.{method.Name}" +
+          throw new NotSupportedException($"Method {_instance.GetType()}.{method.Name}" +
                                           $"has not supported parameters count.");
       }
     }
 
-    public bool TryGetMember<T>(string name, out T member) where T : IViewModelMember
-    {
-      member = default(T);
-      
-      if (!_members.TryGetValue(name, out var value))
-        return false;
-
-      if (!(value is T castedMember))
-        return false;
-      
-      member = castedMember;
-      return true;
-    }
+    public bool HasBy(string name, out IViewModelMember member) =>
+      _members.TryGetValue(name, out member);
   }
 }

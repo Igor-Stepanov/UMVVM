@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Views.Bindings
 {
-  public class Binding : MonoBehaviour, IBinding
+  public abstract class Binding : MonoBehaviour, IBinding
   {
     public void Bind()
     {

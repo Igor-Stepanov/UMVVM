@@ -4,10 +4,11 @@ namespace ViewModels
 {
   public interface IViewModel : IViewModelMember
   {
+    bool Enabled { get; }
+
     void Enable();
     void Disable();
 
-    bool TryGetMember<T>(string name, out T member)
-      where T : IViewModelMember;
+    bool TryGetValue(string name, out IViewModelMember member);
   }
 }

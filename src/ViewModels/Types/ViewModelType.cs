@@ -12,6 +12,7 @@ namespace ViewModels.Types
     public int MembersCount => 
       Fields.Length + Methods.Length;
 
+    // TODO: Profile and cache
     public int ViewModelsCount =>
       Fields.Where(Implements<IViewModel>)
         .Count();

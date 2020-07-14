@@ -1,44 +1,43 @@
 using ViewModels.Members;
-using ViewModels.Types;
+using static ViewModels.Types.ViewModelTypes;
 
 namespace ViewModels
 {
-  public class ViewModel : IViewModel
+  public abstract class ViewModel : IViewModel
   {
-    private ViewModelMembers _members;
+    public bool Enabled { get; private set; }
+    
+    private readonly ViewModelMembers _members;
 
-    private readonly ViewModelType _type;
-
-    public ViewModel(IViewModelTypes types) =>
-      _type = types[GetType()];
+    protected ViewModel() => 
+      _members = MembersOf(this);
 
     void IViewModel.Enable()
     {
+      if (Enabled)
+        return;
+      
       Enable();
-      EnableMembers();
+      _members.Enable();
+
+      Enabled = true;
     }
 
     void IViewModel.Disable()
     {
-      DisableMembers();
+      if (!Enabled)
+        return;
+
+      _members.Disable();
       Disable();
+      
+      Enabled = false;
     }
 
-    public bool TryGetMember<T>(string name, out T member) where T : IViewModelMember =>
-      _members.TryGetMember(name, out member);
+    public bool TryGetValue(string name, out IViewModelMember member) => 
+      _members.HasBy(name, out member);
 
     protected virtual void Enable() { }
     protected virtual void Disable() { }
-
-    private void EnableMembers()
-    {
-      if (_members == null)
-        _members = _type.BuildMembersOf(this);
-
-      _members.Enable();
-    }
-
-    private void DisableMembers() =>
-      _members.Disable();
   }
 }
