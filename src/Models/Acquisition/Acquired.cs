@@ -3,14 +3,14 @@ using Models.Acquisition.Extensions;
 
 namespace Models.Acquisition
 {
-  public class Acquire<TModel> : IAcquire<TModel>, IDisposable
+  public class Acquired<TModel> : IAcquired<TModel>
     where TModel : class, IModel
   {
     public TModel Model { get; private set; }
 
-    [ThreadStatic] private static Acquire<TModel> _acquired;
+    [ThreadStatic] private static Acquired<TModel> _acquired;
 
-    public Acquire(TModel model)
+    public Acquired(TModel model)
     {
       if (_acquired?.Model != model)
       {

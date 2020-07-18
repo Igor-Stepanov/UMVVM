@@ -12,6 +12,12 @@ namespace ViewModels
     protected ViewModel() => 
       _members = MembersOf(this);
 
+    void IViewModel.Initialize()
+    {
+      Initialize();
+      _members.Initialize();
+    }
+
     void IViewModel.Enable()
     {
       if (Enabled)
@@ -34,10 +40,18 @@ namespace ViewModels
       Enabled = false;
     }
 
-    public bool TryGetValue(string name, out IViewModelMember member) => 
+    void IViewModel.Terminate()
+    {
+      Terminate();
+      _members.Terminate();
+    }
+
+    public bool HasBy(string name, out IViewModelMember member) => 
       _members.HasBy(name, out member);
 
+    protected virtual void Initialize() { }
     protected virtual void Enable() { }
     protected virtual void Disable() { }
+    protected virtual void Terminate() { }
   }
 }

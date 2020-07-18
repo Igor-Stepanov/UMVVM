@@ -2,18 +2,30 @@
 using NUnit.Framework;
 using ViewModels;
 using ViewModels.Extensions;
-using static Tests.ViewModelsTests.Fake;
+using Zenject;
 
 namespace Tests.ViewModelsTests
 {
   [TestFixture]
   public class ViewModelTests
   {
+    private DiContainer _container;
+    
+    [OneTimeSetUp]
+    public void SetUp()
+    {
+      _container = new DiContainer();
+      _container
+        .Bind<IViewModel>()
+        .To<FakeViewModel>()
+        .AsSingle();
+    }
+    
     [Test]
     public void WhenEnableViewModel_MembersShouldEnable()
     {
       // Arrange
-      var viewModel = ViewModel();
+      var viewModel = _container.Resolve<IViewModel>();
 
       // Act
       viewModel.Enable();
@@ -28,7 +40,7 @@ namespace Tests.ViewModelsTests
     public void WhenDisableViewModel_MembersShouldDisable()
     {
       // Arrange
-      var viewModel = ViewModel();
+      var viewModel = _container.Resolve<IViewModel>();
 
       // Act
       viewModel.Enable();

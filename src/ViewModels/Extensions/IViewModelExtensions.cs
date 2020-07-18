@@ -9,7 +9,7 @@ namespace ViewModels.Extensions
     {
       member = default(TMember);
 
-      if (!self.TryGetValue(key, out var value))
+      if (!self.HasBy(key, out var value))
         return false;
 
       if (!(value is TMember castedValue))

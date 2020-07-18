@@ -23,19 +23,7 @@ namespace ViewModels.Members
       _viewModels = new List<IViewModel>(_type.ViewModelsCount);
     }
 
-    public void Enable()
-    {
-      Initialize();
-      EnableViewModels();
-    }
-
-    public void Disable()
-    {
-      DisableViewModels();
-      Clear();
-    }
-
-    private void Initialize()
+    public void Initialize()
     {
       foreach (var field in _type.Fields)
       {
@@ -50,19 +38,19 @@ namespace ViewModels.Members
         _members.Add(method.Name, Member(method));
     }
 
-    private void EnableViewModels()
+    public void Enable()
     {
       foreach (var viewModel in _viewModels)
         viewModel.Enable();
     }
 
-    private void DisableViewModels()
+    public void Disable()
     {
       foreach (var viewModel in _viewModels)
         viewModel.Disable();
     }
 
-    private void Clear() =>
+    public void Terminate() =>
       _members.Clear();
 
     private IViewModelMember Member(FieldInfo field) =>

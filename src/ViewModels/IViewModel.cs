@@ -6,9 +6,11 @@ namespace ViewModels
   {
     bool Enabled { get; }
 
+    void Initialize();
     void Enable();
     void Disable();
+    void Terminate();
 
-    bool TryGetValue(string name, out IViewModelMember member);
+    bool HasBy(string name, out IViewModelMember member);
   }
 }
