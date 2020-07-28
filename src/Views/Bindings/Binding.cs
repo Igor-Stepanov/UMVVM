@@ -5,14 +5,22 @@ namespace Views.Bindings
 {
   public abstract class Binding : MonoBehaviour, IBinding
   {
-    public void Bind()
+    protected View View;
+
+    private void Awake()
     {
-      throw new System.NotImplementedException();
+      View = NearestView();
     }
 
-    public void Unbind()
+    public void Bind()
     {
-      throw new System.NotImplementedException();
+      
     }
+
+    public void Unbind() => 
+      throw new NotImplementedException();
+
+    private View NearestView() => 
+      throw new NotImplementedException();
   }
 }

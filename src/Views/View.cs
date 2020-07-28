@@ -1,12 +1,18 @@
 using UnityEngine;
 using ViewModels;
+using ViewModels.Members;
+using ViewModels.Extensions;
 
 namespace Views
 {
-  public class View : MonoBehaviour, IView
+  public abstract class View : MonoBehaviour
   {
     [SerializeField]
     private IViewModel _viewModel;
+
+    public bool HasBy<TMember>(string key, out TMember member)
+      where TMember : IViewModelMember =>
+      _viewModel.HasBy(key, out member);
     
     private void Awake()
     {

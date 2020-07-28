@@ -29,9 +29,12 @@ namespace ViewModels.Members
       {
         var member = Member(field);
         _members.Add(field.Name, member);
-        
+
         if (member is IViewModel viewModel)
+        {
           _viewModels.Add(viewModel);
+          viewModel.Initialize();
+        }
       }
 
       foreach (var method in _type.Methods)
@@ -50,8 +53,13 @@ namespace ViewModels.Members
         viewModel.Disable();
     }
 
-    public void Terminate() =>
+    public void Terminate()
+    {
+      foreach (var viewModel in _viewModels)
+        viewModel.Terminate();
+        
       _members.Clear();
+    }
 
     private IViewModelMember Member(FieldInfo field) =>
       (IViewModelMember) field.GetValue(_instance);
@@ -65,7 +73,7 @@ namespace ViewModels.Members
         case 0:
         {
           var action = (Action) Delegate.CreateDelegate(typeof(Action), _instance, method);
-          return new Command(action);
+          return new Command(method.Name, action, _instance);
         }
         case 1:
         {
@@ -75,7 +83,7 @@ namespace ViewModels.Members
           var commandType = typeof(Command<>).MakeGenericType(parameterType);
 
           var action = Delegate.CreateDelegate(actionType, _instance, method);
-          return (IViewModelMember) Activator.CreateInstance(commandType, action);
+          return (IViewModelMember) Activator.CreateInstance(commandType, method.Name, action, _instance);
         }
         default:
           throw new NotSupportedException($"Method {_instance.GetType()}.{method.Name}" +
